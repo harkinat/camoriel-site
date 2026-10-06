@@ -2,10 +2,10 @@
 # Builds the Tales of Camoriel wiki site.
 #
 # Run from the root of the vault repo (camoriel-wiki), after this repo has been
-# cloned into ./.site. Cloudflare Pages does exactly that:
+# cloned into ./.site. Cloudflare does exactly that:
 #
-#   Build command:     git clone --depth 1 https://github.com/harkinat/camoriel-site .site && bash .site/build.sh
-#   Output directory:  .site/quartz/public
+#   Build command:   git clone --depth 1 https://github.com/harkinat/camoriel-site .site && bash .site/build.sh
+#   Deploy command:  cd .site && npx wrangler@4 deploy
 #
 # The finished site ends up in .site/quartz/public.
 set -euo pipefail

@@ -1,0 +1,11 @@
+// Cloudflare Workers settings for the wiki site.
+// The Worker only serves the files built by build.sh; it runs no code of its own.
+{
+  "name": "camoriel-wiki",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./quartz/public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
