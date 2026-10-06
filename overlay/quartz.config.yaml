@@ -6,7 +6,7 @@ configuration:
   enablePopovers: true
   analytics: null
   locale: en-GB
-  baseUrl: camoriel.pages.dev
+  baseUrl: camoriel-wiki.jdscore.workers.dev
   ignorePatterns:
     - private
     - templates
@@ -46,7 +46,6 @@ plugins:
       defaultDateType: modified
       priority:
         - frontmatter
-        - git
         - filesystem
     order: 10
   - source: "@quartz-community/syntax-highlighting"

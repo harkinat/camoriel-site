@@ -26,7 +26,7 @@ git -C "$QUARTZ" checkout -q FETCH_HEAD
 echo "==> Applying Camoriel theme and settings"
 cp -R "$SITE/overlay/." "$QUARTZ/"
 if [ -n "${SITE_URL:-}" ]; then
-  # Optional: set SITE_URL in Cloudflare (e.g. camoriel.pages.dev) for correct sitemap/RSS links
+  # Optional: set SITE_URL in Cloudflare if the site moves to a new address
   sed -i "s|^  baseUrl: .*|  baseUrl: ${SITE_URL#https://}|" "$QUARTZ/quartz.config.yaml"
 fi
 
@@ -47,6 +47,18 @@ tar -C "$VAULT" \
   -cf - . | tar -C "$QUARTZ/content" -xf -
 cp "$SITE/home.md" "$QUARTZ/content/index.md"
 node "$SITE/scripts/fix-frontmatter.mjs" "$QUARTZ/content"
+
+# Give each note its real "last edited" date from the vault's history, so pages
+# don't all show the build date. Skipped quietly if the history isn't available.
+if git -C "$VAULT" rev-parse -q --verify HEAD >/dev/null 2>&1; then
+  if [ "$(git -C "$VAULT" rev-parse --is-shallow-repository)" = "true" ]; then
+    git -C "$VAULT" fetch -q --unshallow >/dev/null 2>&1 || echo "    (vault history is shallow; dates may be approximate)"
+  fi
+  (cd "$QUARTZ/content" && find . -name '*.md' -print0) | while IFS= read -r -d '' f; do
+    ts="$(git -C "$VAULT" log -1 --format=%ct -- "${f#./}" 2>/dev/null || true)"
+    [ -n "$ts" ] && touch -d "@$ts" "$QUARTZ/content/$f"
+  done
+fi
 
 echo "==> Building the site"
 npx quartz build
